@@ -1,24 +1,17 @@
 import os
+import torch
 import numpy as np
 import pandas as pd
-import pickle
-import torch
-import itertools
-from PIL import Image
-from torch.utils import data
-from torch import nn
 from sklearn.model_selection import train_test_split
-from functools import partial
 from transformers import AutoTokenizer
 from collections import Counter
 from pandarallel import pandarallel
-from skmultilearn.model_selection.iterative_stratification import iterative_train_test_split
-from utils import load_dataset, save_dataset, load_gif
-from pytorch_transformers import BertTokenizer, BertConfig
+from utils import load_dataset
+from pytorch_transformers import BertTokenizer
 pandarallel.initialize()
 
 
-class GifReplyOSCARDataset(data.Dataset):
+class GifReplyOSCARDataset(torch.utils.data.Dataset):
 
     def __init__(self, dataset_path,
                  gif_feature_path,
@@ -195,7 +188,7 @@ class GifReplyOSCARDataset(data.Dataset):
         return tweet_ids, gif_inputs, gif_id
 
 
-class GIFFeatureInferenceDataset(GifReplyOSCARDataset):
+class GIFFeatureInferenceDataset(torch.utils.data.Dataset):
     def __init__(self, gif_ids, train_dataset):
         self.gif_ids = gif_ids
         self.dataset = train_dataset
