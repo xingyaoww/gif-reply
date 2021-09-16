@@ -18,7 +18,7 @@ class GifReplyConfig(object):
     dcg_per_n_epoch = 3  # num of epoch trained between expensive dcg score calculation
     max_epoch = 100
     lr = 1e-5  # initial learning rate
-    weight_decay = 1e-3  # 1e-1
+    weight_decay = 1e-3
     random_seed = 42
 
 opt = GifReplyConfig()
