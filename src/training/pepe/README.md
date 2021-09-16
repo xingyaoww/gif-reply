@@ -3,8 +3,8 @@ Change `dataset_path`, `gif_feature_path`, `oscar_pretrained_model_dir` in `conf
 
 ## Data Preperation
 
-* Change `dataset_path ` to the path of GIF Reply Dataset. Download and prepare the dataset following instruction [here](data/README.md).
-* Change `gif_feature_path` to the path of GIF Feature dataset. Download and prepare the dataset following instruction [here](data/README.md).
+* Change `dataset_path ` to the path of GIF Reply Dataset. Download and prepare the dataset following instruction [here](../../../data/README.md).
+* Change `gif_feature_path` to the path of GIF Feature dataset. Download and prepare the dataset following instruction [here](../../../data/README.md).
 
 ## Pretrained Oscar model
 ```bash
