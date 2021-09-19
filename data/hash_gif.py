@@ -4,7 +4,7 @@ Required packages:
 ```pip install opencv-python imagehash```
 
 Example usage:
-```python3 hash-gif.py test-gif.mp4```
+```python3 hash_gif.py test-gif.mp4```
 '''
 
 import argparse
