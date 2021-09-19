@@ -1,25 +1,66 @@
 # Data
 
 ## GIF Reply dataset
-The released GIF Reply dataset that contains 1,562,701 text-gif conversation turns can be downloaded [here](TODO).
+### Download
+The released GIF Reply dataset `gif-reply-dataset.csv` ([download here](TODO)) that contains 1,562,701 text-gif conversation turns.
 
-This dataset have the following fields:
+This dataset has the following fields:
 - `parent_id`: parent tweet ID
 - `child_id`: child tweet ID
-- `parent_text`: text of the parent tweet. NOTE: due to ? issue, we require user to get tweet text using `parent_id` through the Twitter API and then [normalize the crawled tweets](https://github.com/VinAIResearch/BERTweet#preprocess).
-- `child_gif_id`: GIPHY ID of the replied GIF
-- `tags`: annotated tags for the replied GIF
+- `child_gif_id`: hash ID of the replied GIF (hash for a GIF can be calculated using `python3 data/hash_gif.py`)
 - `set`: whether this reply is a `train` or `test` sample
 
-## GIF Feature dataset
-The dataset is built by running [bottom-up-attention](https://github.com/airsplay/py-bottom-up-attention) and [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) to extract ROI object names, ROI features, and captions from each replied GIF in the GIF Reply dataset.
+This downloaded dataset lacks serveral data fields for model training, following the instructions below to prepare the complete version of GIF reply dataset.
+### Preparation
+First, [Get access to the Twitter Official API](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api).
 
-The pickled dataset can be downloaded [here](TODO).
+After obtained access to Twitter API, create `twitter_credential.json` and filling your credentials in that file:
+```
+{
+	"consumer_key": "PUT YOUR KEY HERE",
+	"consumer_secret": "PUT YOUR SECRET HERE",
+	"access_token": "PUT YOUR KEY HERE",
+	"access_secret": "PUT YOUR SECRET HERE"
+}
+```
 
-This dataset have the following fields:
-- `child_gif_id`: GIPHY ID of the replied GIF
-- `gif_size`: shape of GIF
-- `ocr_results`: captions extracted from four frames sampled from each quartile of the gif’s length, seperated by "[INTER_FRAME_SEP]".
-- `roi_feature`: extracted ROI features from four frames sampled from each quartile of the gif’s length.
-- `roi_labels`: extracted ROI labels from four frames sampled from each quartile of the gif’s length.
+And then install required packages:
+```
+pip install pandas twitter tqdm ujson
+```
 
+Finally, run the [preparation script](prepare_gif_reply_dataset.py) to prepare the dataset:
+```
+    python3 prepare_gif_reply_dataset.py \
+    /path/to/downloaded/gif-reply-dataset.csv \
+    /path/to/processed/gif-reply-dataset.csv \
+    /path/to/downloaded/gif-metadata.csv \
+    /path/to/twitter_credential.json \
+    /tmp/tweets.json \
+```
+
+## GIF metadata
+### Download
+This dataset ([download here](TODO)) contains metadata for GIFs.
+
+It has the following fields:
+- `child_gif_id`: hash ID of the replied GIF
+- `ocr_text`: captions extracted using [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) from four frames sampled from each quartile of the gif’s length, seperated by "[INTER_FRAME_SEP]". 
+- `tags`: annotated tags for GIF
+
+### Additional ROI metadata
+ROI metadata is only required to train the `PEPE` model. 
+Additional ROI metadata can be extracted using [bottom-up-attention](https://github.com/airsplay/py-bottom-up-attention).
+
+Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and it will add the following two fields of data.
+- `roi_feature`: extracted ROI features on four frames sampled from each quartile of the gif’s length.
+- `roi_labels`: extracted ROI labels on four frames sampled from each quartile of the gif’s length.
+
+
+## GIF url mapping
+### Download
+This data ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to a url of that GIF hosted on GIPHY.
+
+It has the following fields:
+- `gif_id`: hash ID of a GIF
+- `giphy_url`: url of that GIF hosted on [GIPHY](https://giphy.com/)
