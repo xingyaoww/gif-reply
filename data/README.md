@@ -45,7 +45,7 @@ This dataset ([download here](TODO)) contains metadata for GIFs.
 
 It has the following fields:
 - `child_gif_id`: hash ID of the replied GIF
-- `ocr_text`: captions extracted using [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) from four frames sampled from each quartile of the gif’s length, seperated by "[INTER_FRAME_SEP]". 
+- `ocr_text`: captions extracted using [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) on four frames sampled from each quartile of the gif’s length, seperated by "[INTER_FRAME_SEP]". 
 - `tags`: annotated tags for GIF
 
 ### Additional ROI metadata
