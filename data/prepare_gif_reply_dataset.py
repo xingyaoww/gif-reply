@@ -1,7 +1,7 @@
 '''This scripts prepares the gif-reply dataset.
 
 Required packages:
-```pip install pandas twitter tqdm usjon```
+```pip install pandas twitter tqdm ujson```
 
 Example usage:
 ```
