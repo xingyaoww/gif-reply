@@ -36,7 +36,7 @@ python3 prepare_gif_reply_dataset.py \
     /path/to/processed/gif-reply-dataset.csv \
     /path/to/downloaded/gif-metadata.csv \
     /path/to/twitter_credential.json \
-    /tmp/tweets.json \
+    /tmp/tweets.json
 ```
 
 ## GIF metadata
