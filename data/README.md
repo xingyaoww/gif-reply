@@ -31,7 +31,7 @@ pip install pandas twitter tqdm ujson
 
 Finally, run the [preparation script](prepare_gif_reply_dataset.py) to prepare the dataset:
 ```
-    python3 prepare_gif_reply_dataset.py \
+python3 prepare_gif_reply_dataset.py \
     /path/to/downloaded/gif-reply-dataset.csv \
     /path/to/processed/gif-reply-dataset.csv \
     /path/to/downloaded/gif-metadata.csv \
