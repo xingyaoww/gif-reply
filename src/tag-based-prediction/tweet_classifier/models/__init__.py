@@ -4,7 +4,7 @@ from .BERTweet import BERTweetModel
 from .metrics import BERTweetMetrics
 
 METRIC_MAP = {
-    "BERTweetModel": BERTweetMetrics,
+    'BERTweetModel': BERTweetMetrics,
 }
 
 

@@ -1,9 +1,13 @@
-import torch
-import pandas as pd
 import numpy as np
-from torch import nn
-from ignite.metrics import Average, Accuracy, Precision, Recall, MetricsLambda
+import pandas as pd
+import torch
+from ignite.metrics import Accuracy
+from ignite.metrics import Average
+from ignite.metrics import MetricsLambda
+from ignite.metrics import Precision
+from ignite.metrics import Recall
 from sklearn.neighbors import NearestNeighbors
+from torch import nn
 
 
 class BERTweetMetrics():
@@ -16,9 +20,11 @@ class BERTweetMetrics():
         self.metrics['loss'] = Average()
         self.metrics['accuracy'] = Accuracy(is_multilabel=not multiclass)
         self.metrics['precision'] = Precision(
-            average=False, is_multilabel=not multiclass)
+            average=False, is_multilabel=not multiclass,
+        )
         self.metrics['recall'] = Recall(
-            average=False, is_multilabel=not multiclass)
+            average=False, is_multilabel=not multiclass,
+        )
         F1 = self.metrics['precision'] * self.metrics['recall'] * 2 / \
             (self.metrics['precision'] + self.metrics['recall'] + 1e-20)
         self.metrics['f1'] = MetricsLambda(lambda t: torch.mean(t).item(), F1)
@@ -27,7 +33,8 @@ class BERTweetMetrics():
         if self.multiclass and self.weight:
             F1 = F1 * (weight / weight.sum())
             self.metrics['weighted-f1'] = MetricsLambda(
-                lambda t: torch.mean(t).item(), F1)
+                lambda t: torch.mean(t).item(), F1,
+            )
 
     def reset(self):
         """Reset internal metrics.
@@ -85,15 +92,23 @@ class BERTweetMetrics():
         """
         results = self.compute() if results is None else results
         mode_str = 'train' if train else 'val'
-        writer.add_scalar('Loss/' + mode_str,
-                          results['loss'] if loss is None else loss[0].item(), step)
-        writer.add_scalar('Accuracy/' + mode_str,
-                          results['accuracy'], step)
-        writer.add_scalar('Precision/' + mode_str,
-                          results['precision'], step)
+        writer.add_scalar(
+            'Loss/' + mode_str,
+            results['loss'] if loss is None else loss[0].item(), step,
+        )
+        writer.add_scalar(
+            'Accuracy/' + mode_str,
+            results['accuracy'], step,
+        )
+        writer.add_scalar(
+            'Precision/' + mode_str,
+            results['precision'], step,
+        )
         writer.add_scalar('Recall/' + mode_str, results['recall'], step)
         writer.add_scalar('F1/' + mode_str, results['f1'], step)
         if 'weighted-f1' in results:
-            writer.add_scalar('Weighted-F1/' + mode_str,
-                              results['weighted-f1'], step)
+            writer.add_scalar(
+                'Weighted-F1/' + mode_str,
+                results['weighted-f1'], step,
+            )
         return results

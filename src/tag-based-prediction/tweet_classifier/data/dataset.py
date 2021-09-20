@@ -1,32 +1,43 @@
-import numpy as np
-import pandas as pd
 import ast
-import torch
 import itertools
 from functools import partial
-from transformers import AutoTokenizer
+
+import numpy as np
+import pandas as pd
+import torch
 from pandarallel import pandarallel
 from sklearn.model_selection import train_test_split
 from skmultilearn.model_selection.iterative_stratification import iterative_train_test_split
+from transformers import AutoTokenizer
 
 pandarallel.initialize()
 
 
 def load_dataset(reply_dataset_path, metadata_path):
     metadata = pd.read_csv(metadata_path)
-    gif_id_to_tags = dict(metadata[["gif_id", "tags"]].to_numpy())
+    gif_id_to_tags = dict(metadata[['gif_id', 'tags']].to_numpy())
 
     dataset = pd.read_csv(reply_dataset_path)
-    dataset["tags"] = dataset["child_gif_id"].apply(lambda x: gif_id_to_tags.get(x)).apply(ast.literal_eval)
+    dataset['tags'] = dataset['child_gif_id'].apply(
+        lambda x: gif_id_to_tags.get(x),
+    ).apply(ast.literal_eval)
 
     dataset_info = {}
-    dataset_info['id_to_label'] = sorted(list(
-        set(itertools.chain.from_iterable(dataset['tags'].to_list()))
-        ))
+    dataset_info['id_to_label'] = sorted(
+        list(
+            set(itertools.chain.from_iterable(dataset['tags'].to_list())),
+        ),
+    )
     dataset_info['label_to_id'] = dict(
-            zip(dataset_info['id_to_label'], range(0, len(dataset_info['id_to_label']))))
+        zip(
+            dataset_info['id_to_label'], range(
+            0, len(dataset_info['id_to_label']),
+            ),
+        ),
+    )
     dataset_info['n_labels'] = len(dataset_info['id_to_label'])
     return dataset, dataset_info
+
 
 def tags_to_vector(tags, label_to_id, n_labels) -> np.array:
     """Process given tags into a 1D vector of length `n_labels`,
@@ -41,7 +52,7 @@ def tags_to_vector(tags, label_to_id, n_labels) -> np.array:
     Returns:
         np.array: created hot vector for given set of tags.
     """
-    assert type(tags) == list, "Expected a list of tags"
+    assert type(tags) == list, 'Expected a list of tags'
     ids = []
     for tag in tags:
         ids.append(label_to_id[tag])
@@ -53,20 +64,21 @@ def tags_to_vector(tags, label_to_id, n_labels) -> np.array:
 class GifReplyDataset(torch.utils.data.Dataset):
 
     # Init tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base")
+    tokenizer = AutoTokenizer.from_pretrained('vinai/bertweet-base')
 
-    def __init__(self, 
-                 dataset_path,
-                 metadata_path,
-                 train=True,
-                 test=False,
-                 dev_size=0.05,
-                 multiclass=False,
-                 max_seq_length=128,
-                 random_state=42,
-                 reuse_data=None,
-                 **kwargs
-                 ):
+    def __init__(
+        self,
+        dataset_path,
+        metadata_path,
+        train=True,
+        test=False,
+        dev_size=0.05,
+        multiclass=False,
+        max_seq_length=128,
+        random_state=42,
+        reuse_data=None,
+        **kwargs,
+    ):
         """
         Initialize GifReply dataset and load relavant information.
         Args:
@@ -97,30 +109,41 @@ class GifReplyDataset(torch.utils.data.Dataset):
             self.id_to_label = dataset_info['id_to_label']
 
             tags_to_vector_func = partial(
-                tags_to_vector, label_to_id=self.label_to_id, n_labels=self.num_classes)
+                tags_to_vector, label_to_id=self.label_to_id, n_labels=self.num_classes,
+            )
             # remove empty tags
             _before = len(self.data)
-            self.data = self.data[self.data['tags'].apply(lambda x: len(x) > 0)]
+            self.data = self.data[
+                self.data['tags'].apply(
+                    lambda x: len(x) > 0,
+                )
+            ]
             _after = len(self.data)
-            print(f"Removed {_after - _before} entries with empty tags from dataset. Before {_before}, After {_after}")
+            print(
+                f'Removed {_after - _before} entries with empty tags from dataset. Before {_before}, After {_after}',
+            )
 
             self.data = self.data.assign(
-                y_true=self.data['tags'].parallel_apply(tags_to_vector_func))
+                y_true=self.data['tags'].parallel_apply(tags_to_vector_func),
+            )
             self.n_samples_per_class_overall = self.multilabel_class_stats(
-                self.data)
+                self.data,
+            )
 
             # Train-Dev split - with stratify for class imbalance
             if 'set' in self.data.columns:
                 self._train_df = self.data[self.data['set'] == 'train']
                 self._dev_df = self.data[self.data['set'] == 'dev']
-                print(f"dataset is already splited, using the provided split: train {len(self._train_df)}, dev {len(self._dev_df)}")
+                print(
+                    f'dataset is already splited, using the provided split: train {len(self._train_df)}, dev {len(self._dev_df)}',
+                )
                 # Ignoring the test set during training
             elif self.multiclass:
                 self._train_df, self._dev_df = train_test_split(
                     self.data,
                     test_size=dev_size,
                     random_state=random_state,
-                    stratify=self.data['y_true'].to_list()
+                    stratify=self.data['y_true'].to_list(),
                 )
             else:
                 X = self.data.to_numpy()
@@ -129,9 +152,11 @@ class GifReplyDataset(torch.utils.data.Dataset):
                     X, y, test_size=dev_size,
                 )
                 self._train_df = pd.DataFrame(
-                    data=X_train, columns=self.data.columns)
+                    data=X_train, columns=self.data.columns,
+                )
                 self._dev_df = pd.DataFrame(
-                    data=X_dev, columns=self.data.columns)
+                    data=X_dev, columns=self.data.columns,
+                )
         else:
             self.num_classes = reuse_data.num_classes
             self.label_to_id = reuse_data.label_to_id
@@ -147,14 +172,14 @@ class GifReplyDataset(torch.utils.data.Dataset):
             self.data = self._dev_df
         self.data.reset_index(drop=True, inplace=True)
 
-
     def __getitem__(self, index):
         row = self.data.loc[index]
         X = row['parent_text']
-        X = self.tokenizer.encode(X,
-                                  max_length=self.max_seq_length,
-                                  truncation=True
-                                  )
+        X = self.tokenizer.encode(
+            X,
+            max_length=self.max_seq_length,
+            truncation=True,
+        )
         X = torch.Tensor(X).long()
         # a scaler when multiclass, a vector when multilabel
         y_true = row['y_true']

@@ -1,8 +1,10 @@
 import torch
-from .dataset import (
-    GifReplyDataset
-)
 from torch.nn.utils.rnn import pad_sequence
+
+from .dataset import (
+    GifReplyDataset,
+)
+
 
 def pad_batch_sequence(X):
     """ collate_fn of DataLoader.
@@ -20,8 +22,9 @@ def pad_batch_sequence(X):
     labels = torch.stack(labels)
     return input_ids, labels
 
+
 COLLATE_FUNC_MAP = {
-    'BERTweetModel': pad_batch_sequence
+    'BERTweetModel': pad_batch_sequence,
 }
 
 

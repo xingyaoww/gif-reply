@@ -15,7 +15,7 @@ class BERTweetModel(torch.nn.Module):
         self._num_classes = num_classes
         self._hidden_size = 768
 
-        self.bertweet = AutoModel.from_pretrained("vinai/bertweet-base")
+        self.bertweet = AutoModel.from_pretrained('vinai/bertweet-base')
         self.classifier = torch.nn.Linear(self._hidden_size, num_classes)
         torch.nn.init.xavier_normal_(self.classifier.weight)
 

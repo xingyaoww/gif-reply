@@ -1,12 +1,13 @@
 import os
 
-class MultilabelConfig(object):
+
+class MultilabelConfig:
     model = 'BERTweetModel'
     dataset = 'GifReplyDataset'
-    multiclass = False # do multilabel classification
-    
-    dataset_path = "/home/xingyaow/gif-reply/data/processed/dataset/bertweet-normalize/finalized-split-dataset/tweet-gif-reply.pickle"
-    metadata_path = ""
+    multiclass = False  # do multilabel classification
+
+    dataset_path = '/home/xingyaow/gif-reply/data/processed/dataset/bertweet-normalize/finalized-split-dataset/tweet-gif-reply.pickle'
+    metadata_path = ''
 
     load_model_path = None  # 'checkpoints/model.pth'
 
@@ -18,7 +19,7 @@ class MultilabelConfig(object):
 
     max_epoch = 100
     lr = 1e-5  # initial learning rate
-    weight_decay = 1e-3 
+    weight_decay = 1e-3
     random_seed = 42
 
 
