@@ -1,5 +1,4 @@
 import torch
-from sklearn.model_selection import train_test_split
 from transformers import AutoTokenizer
 from pandarallel import pandarallel
 from utils import load_dataset, load_gif
