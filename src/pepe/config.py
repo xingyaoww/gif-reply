@@ -5,9 +5,9 @@ class GifReplyOSCARConfig(object):
     model = 'OscarCLIPModel'
     dataset = 'GifReplyOSCARDataset'
 
-    dataset_path = "/home/xingyaow/gif-reply/data/processed/dataset/bertweet-normalize/finalized-split-dataset/tweet-gif-reply.pickle"
-    gif_feature_path = "/home/xingyaow/gif-reply/data/processed/dataset/twitter-all-gif-with-ocr-fastrcnn.pickle"
-    oscar_pretrained_model_dir = "/home/xingyaow/gif-reply/src/models/MultimodalCLIP/models/base-vg-labels/ep_67_588997/"
+    dataset_path = "FILL YOUR PATH TO gif-reply-dataset.csv HERE"
+    gif_feature_path = "FILL YOUR PATH TO gif-metadata.csv HERE"
+    oscar_pretrained_model_dir = "FILL YOUR PATH TO $MODEL_DIR/ep_67_588997 HERE"
     load_model_path = None  # 'checkpoints/model.pth'
 
     use_gpu = True  # use GPU or not
