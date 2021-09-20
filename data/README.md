@@ -75,11 +75,13 @@ Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and
 
 ## GIF GIPHY mapping
 ### Download
+
+This data is NOT needed to reproduce the `PEPE` model, and is only provided for replicability of the tag-based model.
+
 The file `gif-id-to-giphy-id-mapping.csv` ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to GIPHY ID.
 
 `giphy-id-to-gif-id-mapping.csv` ([download here](TODO)) contains a mapping fron the GIPHY ID to the GIF ID (hash ID).
 
-This data is NOT needed to reproduce the `PEPE` model, and is only provided for replicability.
 
 Both files have the following fields:
 - `gif_id`: hash ID of a GIF
