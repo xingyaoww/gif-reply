@@ -1,12 +1,9 @@
-import os
 import torch
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from transformers import AutoTokenizer
-from collections import Counter
 from pandarallel import pandarallel
-from utils import load_dataset
 from pytorch_transformers import BertTokenizer
 pandarallel.initialize()
 
@@ -39,7 +36,7 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
 
         if not reuse_data:
             # Load dataset
-            self.data, dataset_info = load_dataset(dataset_path)
+            self.data = pd.read_csv(dataset_path)
             if 'set' in self.data.columns:
                 self._train_df = self.data[self.data['set'] == 'train']
                 self._dev_df = self.data[self.data['set'] == 'dev']
