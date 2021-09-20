@@ -1,27 +1,30 @@
-import torch
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from transformers import AutoTokenizer
+import torch
 from pandarallel import pandarallel
 from pytorch_transformers import BertTokenizer
+from sklearn.model_selection import train_test_split
+from transformers import AutoTokenizer
 pandarallel.initialize()
 
 
 class GifReplyOSCARDataset(torch.utils.data.Dataset):
 
-    def __init__(self, dataset_path,
-                 gif_feature_path,
-                 train=True,
-                 test=False,
-                 dev_size=0.05,
-                 random_state=42,
-                 reuse_data=None,
-                 oscar_pretrained_model_dir=None,
-                 ):
+    def __init__(
+        self, dataset_path,
+        gif_feature_path,
+        train=True,
+        test=False,
+        dev_size=0.05,
+        random_state=42,
+        reuse_data=None,
+        oscar_pretrained_model_dir=None,
+    ):
         # Init tokenizer
-        tweet_tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base")
-        gif_tokenizer = BertTokenizer.from_pretrained(oscar_pretrained_model_dir)
+        tweet_tokenizer = AutoTokenizer.from_pretrained('vinai/bertweet-base')
+        gif_tokenizer = BertTokenizer.from_pretrained(
+            oscar_pretrained_model_dir,
+        )
         gif_tokenizer.vocab.pop('[unused0]')
         gif_tokenizer.vocab.pop('[unused1]')
         gif_tokenizer.vocab['[INTER_FRAME_SEP]'] = 1
@@ -31,7 +34,7 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
         self.train = train
         self.test = test
         self.bertweet_max_seq_len = 128  # default for bertweet
-        self.max_seq_len = 256 # max_seq_length for OSCAR
+        self.max_seq_len = 256  # max_seq_length for OSCAR
         self.max_img_seq_len = 40  # at most 10 roi per frame, total 4 frames
 
         if not reuse_data:
@@ -41,7 +44,8 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
                 self._train_df = self.data[self.data['set'] == 'train']
                 self._dev_df = self.data[self.data['set'] == 'dev']
                 print(
-                    f"dataset is already splited, using the provided split: train {len(self._train_df)}, dev {len(self._dev_df)}")
+                    f'dataset is already splited, using the provided split: train {len(self._train_df)}, dev {len(self._dev_df)}',
+                )
                 # Ignoring the test set during training
             else:
                 self._train_df, self._dev_df = train_test_split(
@@ -62,7 +66,8 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
         self.data.reset_index(drop=True, inplace=True)
 
         self.gif_features = pd.read_pickle(
-            gif_feature_path).set_index("child_gif_id")
+            gif_feature_path,
+        ).set_index('child_gif_id')
 
     def __len__(self):
         """
@@ -74,18 +79,20 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
     def get_gif_features(self, gif_id):
         row = self.gif_features.loc[gif_id]
         # text_a: caption
-        text_a = row["ocr_results"].replace("[INNER_FRAME_SEP]", "")
-        img_feat = torch.Tensor(np.vstack(row["roi_feature"]))
+        text_a = row['ocr_results'].replace('[INNER_FRAME_SEP]', '')
+        img_feat = torch.Tensor(np.vstack(row['roi_feature']))
         # text_b: labels/tags
-        text_b = row["roi_labels"]
+        text_b = row['roi_labels']
         # remove sep for tokens
         # text_a = text_a.replace("[INTER_FRAME_SEP]", "")
         # text_b = text_b.replace("[INTER_FRAME_SEP]", "")
         return text_a, img_feat, text_b
 
-    def tensorize_gif_example(self, gif_id,
-                              cls_token_segment_id=0, pad_token_segment_id=0,
-                              sequence_a_segment_id=0, sequence_b_segment_id=1):
+    def tensorize_gif_example(
+        self, gif_id,
+        cls_token_segment_id=0, pad_token_segment_id=0,
+        sequence_a_segment_id=0, sequence_b_segment_id=1,
+    ):
         """Code modified from tensorize_example in run_retrieval.py from OSCAR repo."""
 
         text_a, img_feat, text_b = self.get_gif_features(gif_id)
@@ -93,8 +100,12 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
 
         tokens_a = self.gif_tokenizer.tokenize(text_a)
         if len(tokens_a) > self.max_seq_len - 2 - reserve_space_for_text_b:
-            tokens_a = tokens_a[:(self.max_seq_len - 2 -
-                                  reserve_space_for_text_b)]
+            tokens_a = tokens_a[
+                :(
+                    self.max_seq_len - 2 -
+                    reserve_space_for_text_b
+                )
+            ]
 
         tokens = [self.gif_tokenizer.cls_token] + \
             tokens_a + [self.gif_tokenizer.sep_token]
@@ -127,13 +138,13 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
             img_feat = torch.cat((img_feat, padding_matrix), 0)
 
         # generate attention_mask
-        att_mask_type = "CLR"  # self.args.att_mask_type
+        att_mask_type = 'CLR'  # self.args.att_mask_type
         #  parser.add_argument("--att_mask_type", default='CLR', type=str,
         #                 help="attention mask type, support ['CL', 'CR', 'LR', 'CLR']"
         #                 "C: caption, L: labels, R: image regions; CLR is full attention by default."
         #                 "CL means attention between caption and labels."
         #                 "please pay attention to the order CLR, which is the default concat order.")
-        if att_mask_type == "CLR":
+        if att_mask_type == 'CLR':
             attention_mask = [1] * seq_len + [0] * seq_padding_len + \
                              [1] * img_len + [0] * img_padding_len
         else:
@@ -158,7 +169,8 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
                 attention_mask[r_start: r_end, l_start: l_end] = 1
             else:
                 raise ValueError(
-                    "Unsupported attention mask type {}".format(att_mask_type))
+                    f'Unsupported attention mask type {att_mask_type}',
+                )
 
         input_ids = torch.tensor(input_ids, dtype=torch.long)
         attention_mask = torch.tensor(attention_mask, dtype=torch.long)
@@ -171,10 +183,11 @@ class GifReplyOSCARDataset(torch.utils.data.Dataset):
         # Text Data
         _tweet = row['parent_text']
         # truncate query length
-        _tweet_ids = self.tweet_tokenizer.encode(_tweet,
-                                                 max_length=self.bertweet_max_seq_len,
-                                                 truncation=True
-                                                 )
+        _tweet_ids = self.tweet_tokenizer.encode(
+            _tweet,
+            max_length=self.bertweet_max_seq_len,
+            truncation=True,
+        )
         tweet_ids = torch.Tensor(_tweet_ids).long()
 
         # GIF Data

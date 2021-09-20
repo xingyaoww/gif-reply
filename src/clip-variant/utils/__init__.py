@@ -1,13 +1,15 @@
+import ast
 import os
+
 import imageio
 import pandas as pd
 import torch
-import ast
 from PIL import Image
 from preprocessing import transform
 
+
 def gif_id_to_filepath(gif_id, ext='.mp4') -> str:
-    GIFS_SOURCE = os.environ.get("GIF_PATH")
+    GIFS_SOURCE = os.environ.get('GIF_PATH')
 
     def _gif_id_to_structured_path(gif_id):
         return os.path.join(gif_id[0], gif_id[1], gif_id[2], gif_id[3:])
@@ -18,6 +20,7 @@ def select_4_frames(frames: list):
     n_frames = len(frames)
     idx = [i*(n_frames//4) for i in range(4)]
     return [frames[i] for i in idx]
+
 
 def load_gif(gif_id, frame_reduce_fn=select_4_frames):
     # 1. Check if the GIF is already preloaded

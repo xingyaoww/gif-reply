@@ -1,14 +1,16 @@
 import torch
+from pytorch_transformers import BertConfig
 from torch import nn
 from transformers import AutoModel
+
 from .modeling_bert import BertImgModel
-from pytorch_transformers import BertConfig
+
 
 class TweetEncoder(nn.Module):
     def __init__(self, output_dim=512):
         super().__init__()
         self._hidden_size = 768
-        self.bertweet = AutoModel.from_pretrained("vinai/bertweet-base")
+        self.bertweet = AutoModel.from_pretrained('vinai/bertweet-base')
         self.linear_transform = nn.Linear(self._hidden_size, output_dim)
         nn.init.xavier_normal_(self.linear_transform.weight)
 
@@ -16,7 +18,6 @@ class TweetEncoder(nn.Module):
         # Models outputs are now tuples
         features = self.bertweet(tweet_input_ids)[1]
         return self.linear_transform(features)
-
 
 
 class OscarGIFEncoder(nn.Module):
@@ -28,18 +29,22 @@ class OscarGIFEncoder(nn.Module):
         self.config = BertConfig.from_pretrained(oscar_pretrained_model_dir)
         # Use OSCAR as underlying image encoder
         self.bert = BertImgModel.from_pretrained(
-            oscar_pretrained_model_dir, config=self.config)
+            oscar_pretrained_model_dir, config=self.config,
+        )
 
         self.linear = nn.Linear(
-            self.config.hidden_size, self.image_feature_size)
+            self.config.hidden_size, self.image_feature_size,
+        )
 
     def init_code_embedding(self, em):
         self.bert.code_embeddings.weight.data = em.clone()
 
     def forward(self, gif_inputs):
         input_ids, attention_mask, token_type_ids, img_feats = gif_inputs
-        outputs = self.bert(input_ids, attention_mask=attention_mask,
-                            token_type_ids=token_type_ids, img_feats=img_feats)
+        outputs = self.bert(
+            input_ids, attention_mask=attention_mask,
+            token_type_ids=token_type_ids, img_feats=img_feats,
+        )
         pooled_output = outputs[1]
         logits = self.linear(pooled_output)
         return logits
@@ -58,15 +63,18 @@ class OscarCLIPModel(nn.Module):
         super().__init__()
         self.gif_encoder = OscarGIFEncoder(
             oscar_pretrained_model_dir,
-            image_feature_size=512, 
-            n_frames=n_frames
+            image_feature_size=512,
+            n_frames=n_frames,
         )
         self.tweet_encoder = TweetEncoder(output_dim=512)
         # initialize learnable temperature to 0.07 as mentioned in the paper
         # "as a log-parameterized multiplicative scalar"
         self.log_of_tau = nn.Parameter(torch.tensor(0.07), requires_grad=True)
-        self.log_of_tau_max = nn.Parameter(torch.log(
-            torch.tensor(100.0)), requires_grad=False)
+        self.log_of_tau_max = nn.Parameter(
+            torch.log(
+            torch.tensor(100.0),
+            ), requires_grad=False,
+        )
 
     def extract_gif_feature(self, gif_inputs):
         return self.gif_encoder(gif_inputs)
@@ -113,6 +121,7 @@ class OscarCLIPModel(nn.Module):
         gif_features = self.extract_gif_feature(gif_inputs)
         tweet_features = self.extract_tweet_feature(tweet_input_ids)
         score = self.calculate_score(
-            gif_features, tweet_features, include_softmax)
+            gif_features, tweet_features, include_softmax,
+        )
         # NOTE: the y_true would just be an identity matrix with shape [batchsize, batchsize]
         return score

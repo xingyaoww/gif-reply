@@ -1,7 +1,7 @@
-import torch
 import pandas as pd
-from transformers import AutoTokenizer
+import torch
 from pandarallel import pandarallel
+from transformers import AutoTokenizer
 from utils import load_gif
 pandarallel.initialize()
 
@@ -9,14 +9,15 @@ pandarallel.initialize()
 class GifReplyDataset(torch.utils.data.Dataset):
 
     # Init tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base")
+    tokenizer = AutoTokenizer.from_pretrained('vinai/bertweet-base')
 
-    def __init__(self, dataset_path,
-                 train=True,
-                 test=False,
-                 reuse_data=None,
-                 max_seq_length=128,  # default for BERTweet
-                 ):
+    def __init__(
+        self, dataset_path,
+        train=True,
+        test=False,
+        reuse_data=None,
+        max_seq_length=128,  # default for BERTweet
+    ):
 
         # Store arguments
         self.train = train
@@ -30,7 +31,8 @@ class GifReplyDataset(torch.utils.data.Dataset):
             self._train_df = self.data[self.data['set'] == 'train']
             self._dev_df = self.data[self.data['set'] == 'dev']
             print(
-                f"dataset is already splited, using the provided split: train {len(self._train_df)}, dev {len(self._dev_df)}")
+                f'dataset is already splited, using the provided split: train {len(self._train_df)}, dev {len(self._dev_df)}',
+            )
         else:
             self._train_df = reuse_data._train_df
             self._dev_df = reuse_data._dev_df
@@ -55,10 +57,11 @@ class GifReplyDataset(torch.utils.data.Dataset):
         # Text Data
         _tweet = row['parent_text']
         # truncate query length
-        _tweet_ids = self.tokenizer.encode(_tweet,
-                                           max_length=self.max_seq_length,
-                                           truncation=True
-                                           )
+        _tweet_ids = self.tokenizer.encode(
+            _tweet,
+            max_length=self.max_seq_length,
+            truncation=True,
+        )
         tweet_ids = torch.Tensor(_tweet_ids).long()
 
         # GIF Data

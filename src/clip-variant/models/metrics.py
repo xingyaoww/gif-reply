@@ -1,8 +1,9 @@
-import torch
 import numpy as np
-from torch import nn
-from ignite.metrics import Average, Accuracy
+import torch
+from ignite.metrics import Accuracy
+from ignite.metrics import Average
 from sklearn.metrics import dcg_score
+from torch import nn
 from tqdm import tqdm
 
 
@@ -16,8 +17,10 @@ class DCGMetric():
     of GIF ids, its feature will NOT be used.
     """
 
-    def __init__(self, inference_dataloader, train_dataloader, val_dataloader,
-                 batchsize=128, num_workers=8, k=30):
+    def __init__(
+        self, inference_dataloader, train_dataloader, val_dataloader,
+        batchsize=128, num_workers=8, k=30,
+    ):
         self.batchsize = batchsize
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
@@ -59,15 +62,18 @@ class DCGMetric():
             tweet_input_ids = tweet_input_ids.cuda()
             tweet_features = model.extract_tweet_feature(tweet_input_ids)
             probs = model.calculate_score(
-                tweet_features, gif_features, include_softmax=True)
+                tweet_features, gif_features, include_softmax=True,
+            )
 
             y_score, y_pred = torch.topk(
-                probs, k=self.K, dim=-1)
+                probs, k=self.K, dim=-1,
+            )
             y_pred = y_pred.detach().cpu().numpy()
             y_score = y_score.detach().cpu().numpy()
 
             gif_indices = list(
-                map(lambda gif_id: gif_id_to_idx[gif_id], gif_ids))
+                map(lambda gif_id: gif_id_to_idx[gif_id], gif_ids),
+            )
 
             all_y_scores.append(y_score)
             all_y_preds.append(y_pred)
@@ -79,7 +85,8 @@ class DCGMetric():
         all_gif_indices = np.array(all_gif_indices)
 
         dcg = self.calculate_dcg(
-            y_true_label=all_gif_indices, y_pred=all_y_preds, y_score=all_y_scores)
+            y_true_label=all_gif_indices, y_pred=all_y_preds, y_score=all_y_scores,
+        )
         return dcg
 
     def compute(self, model, train=False):
@@ -94,7 +101,7 @@ class DCGMetric():
             model = model.module
         with torch.no_grad():
             # Generation of GIF features
-            print(f"Starting generating GIF features using current model.")
+            print(f'Starting generating GIF features using current model.')
             for i, _data in tqdm(enumerate(self.inference_dataloader), total=len(self.inference_dataloader)):
                 gifs, gif_ids = _data
                 gifs = gifs.cuda()
@@ -106,20 +113,23 @@ class DCGMetric():
 
             # Generate Tensor form GIF feature
             gif_idx_to_id, gif_features = list(
-                zip(*self.gif_id_to_feature.items()))
+                zip(*self.gif_id_to_feature.items()),
+            )
             gif_features = torch.stack(gif_features)
 
             gif_id_to_idx = dict(zip(gif_idx_to_id, range(len(gif_idx_to_id))))
             gif_features = gif_features.cuda()
-            print(f"GIF features shape: {gif_features.shape}")
+            print(f'GIF features shape: {gif_features.shape}')
 
             # Calculate DCG for train/dev
-            print(f"Calculating DCG on training set using current model.")
+            print(f'Calculating DCG on training set using current model.')
             results['DCG-train'] = self.cal_dcg_score_with_dataloader(
-                model, gif_features, self.train_dataloader, gif_id_to_idx)
-            print(f"Calculating DCG on validation set using current model.")
+                model, gif_features, self.train_dataloader, gif_id_to_idx,
+            )
+            print(f'Calculating DCG on validation set using current model.')
             results['DCG-val'] = self.cal_dcg_score_with_dataloader(
-                model, gif_features, self.val_dataloader, gif_id_to_idx)
+                model, gif_features, self.val_dataloader, gif_id_to_idx,
+            )
         model.train()
         return results
 
@@ -132,7 +142,8 @@ class CLIPMetrics():
         self.metrics['accuracy'] = Accuracy()
         # NOTE: in the case of GIF-reply, IDCG always equals 1, hence DCG=NDCG
         self.metrics['dcg'] = DCGMetric(
-            inference_dataloader, train_dataloader, val_dataloader)
+            inference_dataloader, train_dataloader, val_dataloader,
+        )
 
     def reset(self):
         """Reset internal metrics.
@@ -168,8 +179,10 @@ class CLIPMetrics():
         result['accuracy'] = self.metrics['accuracy'].compute()
         return result
 
-    def log_tensorboard(self, writer, step, results=None, loss=None,
-                        model=None, train=True, calculate_dcg=False):
+    def log_tensorboard(
+        self, writer, step, results=None, loss=None,
+        model=None, train=True, calculate_dcg=False,
+    ):
         """Compute and log the current metric to tensorboard.
 
         Args:
@@ -181,15 +194,24 @@ class CLIPMetrics():
             train (bool, optional): whether in training mode. Defaults to True.
         """
         results = self.compute(
-            model, train=train, calculate_dcg=calculate_dcg) if results is None else results
+            model, train=train, calculate_dcg=calculate_dcg,
+        ) if results is None else results
         mode_str = 'train' if train else 'val'
-        writer.add_scalar('Loss/' + mode_str,
-                          results['loss'] if loss is None else loss.item(), step)
-        writer.add_scalar('Accuracy/' + mode_str,
-                          results['accuracy'], step)
+        writer.add_scalar(
+            'Loss/' + mode_str,
+            results['loss'] if loss is None else loss.item(), step,
+        )
+        writer.add_scalar(
+            'Accuracy/' + mode_str,
+            results['accuracy'], step,
+        )
         if 'DCG-train' in results:
-            writer.add_scalar('DCG/train',
-                              results['DCG-train'], step)
-            writer.add_scalar('DCG/val',
-                              results['DCG-val'], step)
+            writer.add_scalar(
+                'DCG/train',
+                results['DCG-train'], step,
+            )
+            writer.add_scalar(
+                'DCG/val',
+                results['DCG-val'], step,
+            )
         return results

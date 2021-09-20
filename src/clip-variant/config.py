@@ -1,11 +1,11 @@
 import os
 
 
-class GifReplyConfig(object):
+class GifReplyConfig:
     model = 'CLIPModel'
     dataset = 'GifReplyDataset'
 
-    dataset_path = "FILL YOUR PATH TO gif-reply-dataset.csv HERE"
+    dataset_path = 'FILL YOUR PATH TO gif-reply-dataset.csv HERE'
     load_model_path = None  # 'checkpoints/model.pth'
 
     use_gpu = True  # use GPU or not
@@ -20,6 +20,7 @@ class GifReplyConfig(object):
     lr = 1e-5  # initial learning rate
     weight_decay = 1e-3
     random_seed = 42
+
 
 opt = GifReplyConfig()
 if opt.use_gpu:

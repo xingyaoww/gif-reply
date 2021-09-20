@@ -4,7 +4,7 @@ from .CLIP import CLIPModel
 from .metrics import CLIPMetrics
 
 METRIC_MAP = {
-    "CLIPModel": CLIPMetrics,
+    'CLIPModel': CLIPMetrics,
 }
 
 

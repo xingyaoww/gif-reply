@@ -1,14 +1,16 @@
-from config import opt
-from tqdm import tqdm
-import models
-import data
-from torch.nn import CrossEntropyLoss
-from torch.utils.tensorboard import SummaryWriter
-from torch.utils.data import DataLoader
-from pprint import pprint
 import os
-import torch
+from pprint import pprint
+
+import models
 import pandas as pd
+import torch
+from config import opt
+from torch.nn import CrossEntropyLoss
+from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
+
+import data
 
 
 def set_random_seed(seed):
@@ -24,45 +26,49 @@ set_random_seed(opt.random_seed)
 train_data = getattr(data, opt.dataset)(
     opt.dataset_path, opt.gif_feature_path, train=True,
     random_state=opt.random_seed,
-    oscar_pretrained_model_dir=opt.oscar_pretrained_model_dir
+    oscar_pretrained_model_dir=opt.oscar_pretrained_model_dir,
 )
-print("Train data loaded.")
+print('Train data loaded.')
 val_data = getattr(data, opt.dataset)(
     opt.dataset_path, opt.gif_feature_path, train=False,
     random_state=opt.random_seed, reuse_data=train_data,
-    oscar_pretrained_model_dir=opt.oscar_pretrained_model_dir
+    oscar_pretrained_model_dir=opt.oscar_pretrained_model_dir,
 )
-print("Validation data loaded.")
+print('Validation data loaded.')
 gifs_inference_dataset = data.GIFFeatureInferenceDataset(
-        pd.read_pickle(opt.gif_feature_path)['child_gif_id'].to_list(),
-        train_data)
+    pd.read_pickle(opt.gif_feature_path)['child_gif_id'].to_list(),
+    train_data,
+)
 
 
-gifs_inference_dataloader = DataLoader(gifs_inference_dataset,
-                                       opt.gif_inference_batchsize,
-                                       shuffle=False,
-                                       num_workers=opt.num_workers,
-                                       )
+gifs_inference_dataloader = DataLoader(
+    gifs_inference_dataset,
+    opt.gif_inference_batchsize,
+    shuffle=False,
+    num_workers=opt.num_workers,
+)
 collate_fn = data.get_collate_fn(opt.model)
-train_dataloader = DataLoader(train_data,
-                              opt.batch_size,
-                              shuffle=True,
-                              num_workers=opt.num_workers,
-                              collate_fn=collate_fn,
-                              drop_last=True,
-                              )
-val_dataloader = DataLoader(val_data,
-                            opt.batch_size,
-                            shuffle=False,
-                            num_workers=opt.num_workers,
-                            collate_fn=collate_fn,
-                            drop_last=True,
-                            )
-print("All data loaded.")
+train_dataloader = DataLoader(
+    train_data,
+    opt.batch_size,
+    shuffle=True,
+    num_workers=opt.num_workers,
+    collate_fn=collate_fn,
+    drop_last=True,
+)
+val_dataloader = DataLoader(
+    val_data,
+    opt.batch_size,
+    shuffle=False,
+    num_workers=opt.num_workers,
+    collate_fn=collate_fn,
+    drop_last=True,
+)
+print('All data loaded.')
 
 # 2. Load model
 model = getattr(models, opt.model)()
-print("Model loaded.")
+print('Model loaded.')
 
 if opt.load_model_path:
     model.load_state_dict(torch.load(opt.load_model_path))
@@ -77,7 +83,7 @@ metrics_manager = models.get_metric_class(opt.model)(
     train_dataloader=train_dataloader,
     val_dataloader=val_dataloader,
 )
-print("Metric Manager loaded.")
+print('Metric Manager loaded.')
 
 
 def forward_step(model, inputs, labels, criterion):
@@ -97,7 +103,7 @@ def forward_step(model, inputs, labels, criterion):
 
 
 def val(model, dataloader, metrics_manager, calculate_dcg=False):
-    print("Validating model.")
+    print('Validating model.')
     model.eval()
 
     criterion = CrossEntropyLoss()
@@ -108,21 +114,25 @@ def val(model, dataloader, metrics_manager, calculate_dcg=False):
         for _, data in tqdm(enumerate(dataloader), total=len(val_data)//opt.batch_size):
             inputs, labels = data
             loss, y_pred, y_true = forward_step(
-                model, inputs, labels, criterion=criterion)
+                model, inputs, labels, criterion=criterion,
+            )
             metrics_manager.update(loss, y_pred, y_true)
         results = metrics_manager.compute(
-            model=model, train=False, calculate_dcg=calculate_dcg)
+            model=model, train=False, calculate_dcg=calculate_dcg,
+        )
 
     model.train()
     return results
 
 
 def train():
-    print("Training Started.")
+    print('Training Started.')
     # 1. Criterion and Optimizer
     lr = opt.lr
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr,
-                                  weight_decay=opt.weight_decay)
+    optimizer = torch.optim.AdamW(
+        model.parameters(), lr=lr,
+        weight_decay=opt.weight_decay,
+    )
 
     criterion = CrossEntropyLoss()  # softmax + cross-entropy
 
@@ -132,20 +142,24 @@ def train():
         # Calculate DCG
         calculate_dcg = epoch % opt.dcg_per_n_epoch == 0
         # Validate
-        val_results = val(model, val_dataloader,
-                          metrics_manager, calculate_dcg=calculate_dcg)
-        print(f"epoch {epoch} validation result: ", end='')
+        val_results = val(
+            model, val_dataloader,
+            metrics_manager, calculate_dcg=calculate_dcg,
+        )
+        print(f'epoch {epoch} validation result: ', end='')
         pprint(val_results)
 
         # Tensorboard logging
         metrics_manager.log_tensorboard(
-            writer, step, results=val_results, train=False)
+            writer, step, results=val_results, train=False,
+        )
 
         metrics_manager.reset()
         for _, (inputs, labels) in tqdm(enumerate(train_dataloader), total=len(train_data)//opt.batch_size):
             optimizer.zero_grad()
             loss, y_pred, y_true = forward_step(
-                model, inputs, labels, criterion=criterion)
+                model, inputs, labels, criterion=criterion,
+            )
             loss.backward()
             optimizer.step()
 
@@ -156,25 +170,35 @@ def train():
             if step % opt.print_freq == 0:
                 # TensorBoard Logging
                 metric_result = metrics_manager.log_tensorboard(
-                    writer, step, results=None, loss=loss, train=True)
+                    writer, step, results=None, loss=loss, train=True,
+                )
                 print(
-                    f"step: {step}, loss: {loss.item()}")
+                    f'step: {step}, loss: {loss.item()}',
+                )
 
                 # Training specific info
-                parameter_l2_norm = torch.sum(torch.stack(
-                    [torch.norm(p) for p in model.parameters()], dim=0))
-                gradient_l2_norm = torch.sum(torch.stack(
-                    [torch.norm(p.grad.data) for p in model.parameters() if p.grad is not None], dim=0))
-                writer.add_scalar("parameter_l2_norm", parameter_l2_norm, step)
-                writer.add_scalar("gradient_l2_norm", gradient_l2_norm, step)
+                parameter_l2_norm = torch.sum(
+                    torch.stack(
+                    [torch.norm(p) for p in model.parameters()], dim=0,
+                    ),
+                )
+                gradient_l2_norm = torch.sum(
+                    torch.stack(
+                    [torch.norm(p.grad.data) for p in model.parameters() if p.grad is not None], dim=0,
+                    ),
+                )
+                writer.add_scalar('parameter_l2_norm', parameter_l2_norm, step)
+                writer.add_scalar('gradient_l2_norm', gradient_l2_norm, step)
 
             step += 1
 
         # Save model
         if not os.path.exists('checkpoints'):
             os.makedirs('checkpoints')
-        torch.save(model.state_dict(),
-                   f"checkpoints/{opt.model}-epoch-{epoch}.pth")
+        torch.save(
+            model.state_dict(),
+            f'checkpoints/{opt.model}-epoch-{epoch}.pth',
+        )
 
 
 if __name__ == '__main__':

@@ -1,12 +1,12 @@
 """Models
 """
 from .CLIP import CLIPModel
-from .OscarCLIP import OscarCLIPModel
 from .metrics import CLIPMetrics
+from .OscarCLIP import OscarCLIPModel
 
 METRIC_MAP = {
-    "CLIPModel": CLIPMetrics,
-    "OscarCLIPModel": CLIPMetrics,
+    'CLIPModel': CLIPMetrics,
+    'OscarCLIPModel': CLIPMetrics,
 }
 
 

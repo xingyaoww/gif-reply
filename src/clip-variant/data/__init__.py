@@ -1,9 +1,8 @@
 import torch
-from .dataset import (
-    GifReplyDataset,
-    GIFFeatureInferenceDataset
-)
 from torch.nn.utils.rnn import pad_sequence
+
+from .dataset import GIFFeatureInferenceDataset
+from .dataset import GifReplyDataset
 
 CLIP_CONTEXT_LENGTH = 77
 
@@ -25,7 +24,7 @@ def pad_batch_sequence(X):
 
 
 COLLATE_FUNC_MAP = {
-    'CLIPModel': pad_batch_sequence
+    'CLIPModel': pad_batch_sequence,
 }
 
 

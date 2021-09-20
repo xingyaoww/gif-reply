@@ -1,9 +1,8 @@
 import torch
-from .dataset import (
-    GIFFeatureInferenceDataset,
-    GifReplyOSCARDataset
-)
 from torch.nn.utils.rnn import pad_sequence
+
+from .dataset import GIFFeatureInferenceDataset
+from .dataset import GifReplyOSCARDataset
 
 
 def pad_OSCAR_sequence(X):
@@ -36,7 +35,7 @@ def pad_OSCAR_sequence(X):
 
 
 COLLATE_FUNC_MAP = {
-    'OscarCLIPModel': pad_OSCAR_sequence
+    'OscarCLIPModel': pad_OSCAR_sequence,
 }
 
 

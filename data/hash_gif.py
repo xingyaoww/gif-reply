@@ -6,16 +6,16 @@ Required packages:
 Example usage:
 ```python3 hash_gif.py test-gif.mp4```
 '''
-
 import argparse
-import imagehash
 import logging
+
 import cv2
+import imagehash
 import numpy as np
 from PIL import Image
 
 parser = argparse.ArgumentParser()
-parser.add_argument("filepath", help="filepath of the GIF to run hash on.")
+parser.add_argument('filepath', help='filepath of the GIF to run hash on.')
 args = parser.parse_args()
 
 
@@ -39,13 +39,13 @@ def hash_gif(file_path):
         mid_frame = Image.fromarray(gif[n_frame//2])
         last_frame = Image.fromarray(gif[n_frame-1])
         return str(imagehash.average_hash(first_frame)) \
-                + str(imagehash.average_hash(mid_frame)) \
-                + str(imagehash.average_hash(last_frame))
+            + str(imagehash.average_hash(mid_frame)) \
+            + str(imagehash.average_hash(last_frame))
     except Exception as e:
         logging.exception(e)
         return None
 
-if __name__ == "__main__":
-    hash_val = hash_gif(args.filepath)
-    print(f"hash value for {args.filepath} is {hash_val}")
 
+if __name__ == '__main__':
+    hash_val = hash_gif(args.filepath)
+    print(f'hash value for {args.filepath} is {hash_val}')
