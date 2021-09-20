@@ -6,8 +6,8 @@ class MultilabelConfig:
     dataset = 'GifReplyDataset'
     multiclass = False  # do multilabel classification
 
-    dataset_path = '/home/xingyaow/gif-reply/data/processed/dataset/bertweet-normalize/finalized-split-dataset/tweet-gif-reply.pickle'
-    metadata_path = ''
+    dataset_path = 'FILL YOUR PATH TO gif-reply-dataset.csv HERE'
+    metadata_path =  'FILL YOUR PATH TO gif-metadata.csv HERE'
 
     load_model_path = None  # 'checkpoints/model.pth'
 

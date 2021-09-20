@@ -7,9 +7,10 @@ class MultilabelConfig:
     with_frame_seq = True
 
     multiclass = False
-    use_seq_processor = False
-    dataset_path = '/home/xingyaow/gif-reply/data/processed/dataset/twitter-gif-classification-crawled-seleted.pickle'
-    metadata_path = ''
+    use_seq_processor = True
+
+    dataset_path = 'FILL YOUR PATH TO gif-reply-dataset.csv HERE'
+    metadata_path = 'FILL YOUR PATH TO gif-metadata.csv HERE'
     load_model_path = None  # 'checkpoints/model.pth'
 
     use_gpu = True  # use GPU or not
