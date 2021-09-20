@@ -1,12 +1,11 @@
-
-'''This scripts downloads
+'''This scripts downloads GIFs from Twitter.
 
 Required packages:
 ```pip install pandas tqdm requests```
 
 Example usage:
 ```
-    python3 download_twitter_gif.py \
+python3 download_twitter_gif.py \
     /path/to/downloaded/gif-twitter-url-mapping.csv \
     /path/to/store/downloaded/gifs/
 ```
@@ -16,7 +15,6 @@ import argparse
 import pandas as pd
 import sys
 import os
-import time
 import logging
 import requests
 from tqdm import tqdm
@@ -61,6 +59,7 @@ def download_gif_file(gif_id: str, download_url: str):
                 f.write(img_file.content)
         else:
             gif_filepath = None
+            # Note that some of the GIFs hosted on Twitter might be removed by the original poster.
             logging.error(f"Failed to download GIF file: {download_url}")
     except Exception as e:
         logging.exception(e)
