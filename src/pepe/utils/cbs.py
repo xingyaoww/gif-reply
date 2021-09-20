@@ -109,7 +109,10 @@ class ConstrainedBeamSearch:
         # generated hypotheses
         generated_hyps = [
             [
-                BeamHypotheses(self.num_keep_best, self.max_steps, self.length_penalty, early_stopping=False)
+                BeamHypotheses(
+                    self.num_keep_best, self.max_steps,
+                    self.length_penalty, early_stopping=False,
+                )
                 for _ in range(num_fsm_states)
             ]
             for bb in range(batch_size)
@@ -640,7 +643,7 @@ class ConstraintFilter:
         # Replace class name according to ``self.REPLACEMENTS``.
         class_names = [
             self.REPLACEMENTS.get(
-            t[0], t[0],
+                t[0], t[0],
             ) for t in class_names_and_scores
         ]
 

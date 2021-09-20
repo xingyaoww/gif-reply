@@ -72,7 +72,7 @@ class OscarCLIPModel(nn.Module):
         self.log_of_tau = nn.Parameter(torch.tensor(0.07), requires_grad=True)
         self.log_of_tau_max = nn.Parameter(
             torch.log(
-            torch.tensor(100.0),
+                torch.tensor(100.0),
             ), requires_grad=False,
         )
 

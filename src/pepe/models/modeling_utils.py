@@ -617,7 +617,7 @@ class CaptionPreTrainedModel(PreTrainedModel):
                     # batch dim of `past` and `mems` is at 1st position
                     reordered_layer_past = [
                         layer_past[i].unsqueeze(
-                        0,
+                            0,
                         ).clone().detach() for i in beam_idx
                     ]
                     reordered_layer_past = torch.cat(

@@ -179,12 +179,12 @@ def train():
                 # Training specific info
                 parameter_l2_norm = torch.sum(
                     torch.stack(
-                    [torch.norm(p) for p in model.parameters()], dim=0,
+                        [torch.norm(p) for p in model.parameters()], dim=0,
                     ),
                 )
                 gradient_l2_norm = torch.sum(
                     torch.stack(
-                    [torch.norm(p.grad.data) for p in model.parameters() if p.grad is not None], dim=0,
+                        [torch.norm(p.grad.data) for p in model.parameters() if p.grad is not None], dim=0,
                     ),
                 )
                 writer.add_scalar('parameter_l2_norm', parameter_l2_norm, step)
