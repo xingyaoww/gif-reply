@@ -39,14 +39,32 @@ python3 prepare_gif_reply_dataset.py \
     /tmp/tweets.json
 ```
 
+## GIF url mapping
+### Download the mapping
+This data `gif-twitter-url-mapping.csv` ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to a url of that GIF hosted on Twitter.
+
+It has the following fields:
+- `gif_id`: hash ID of a GIF
+- `twitter_url`: url of the GIF hosted on Twitter.
+
+All GIFs need to be downloaded for the purpose of model training. Note that some of the GIFs hosted on Twitter might not be available at download time, as they can be removed by the original poster.
+
+### Download all GIFs
+GIFs can be downloaded by using [this](download_twitter_gif.py) script as follows:
+```
+python3 download_twitter_gif.py \
+    /path/to/downloaded/gif-twitter-url-mapping.csv \
+    /path/to/store/downloaded/gifs/
+```
+
 ## GIF metadata
 ### Download
-This dataset ([download here](TODO)) contains metadata for GIFs.
+This dataset `gif-metadata.csv` ([download here](TODO)) contains metadata for GIFs.
 
 It has the following fields:
 - `child_gif_id`: hash ID of the replied GIF
 - `ocr_text`: captions extracted using [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) on four frames sampled from each quartile of the gif’s length, seperated by "[INTER_FRAME_SEP]". 
-- `tags`: annotated tags for GIF
+- `tags`: annotated tags for GIF. This is NOT needed to reproduce the `PEPE` model, and is only provided for replicability.
 
 ### Additional ROI metadata
 ROI metadata is only required to train the `PEPE` model. 
@@ -57,10 +75,14 @@ Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and
 - `roi_labels`: extracted ROI labels on four frames sampled from each quartile of the gif’s length.
 
 
-## GIF url mapping
+## GIF GIPHY mapping
 ### Download
-This data ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to a url of that GIF hosted on GIPHY.
+The file `gif-id-to-giphy-id-mapping.csv` ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to GIPHY ID.
 
-It has the following fields:
+`giphy-id-to-gif-id-mapping.csv` ([download here](TODO)) contains a mapping fron the GIPHY ID to the GIF ID (hash ID).
+
+This data is NOT needed to reproduce the `PEPE` model, and is only provided for replicability.
+
+Both files have the following fields:
 - `gif_id`: hash ID of a GIF
-- `giphy_url`: url of that GIF hosted on [GIPHY](https://giphy.com/)
+- `giphy_id`: ID of the matched GIF on [GIPHY](https://giphy.com/). The GIF hosted on GIPHY can be found using link `https://giphy.com/gifs/[GIPHY_ID_HERE]`.
