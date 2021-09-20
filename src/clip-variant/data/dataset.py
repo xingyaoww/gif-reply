@@ -1,7 +1,8 @@
 import torch
+import pandas as pd
 from transformers import AutoTokenizer
 from pandarallel import pandarallel
-from utils import load_dataset, load_gif
+from utils import load_gif
 pandarallel.initialize()
 
 
@@ -24,7 +25,7 @@ class GifReplyDataset(torch.utils.data.Dataset):
 
         if not reuse_data:
             # Load dataset
-            self.data, dataset_info = load_dataset(dataset_path)
+            self.data = pd.read_csv(dataset_path)
             assert 'set' in self.data.columns
             self._train_df = self.data[self.data['set'] == 'train']
             self._dev_df = self.data[self.data['set'] == 'dev']

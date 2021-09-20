@@ -6,18 +6,6 @@ import ast
 from PIL import Image
 from preprocessing import transform
 
-def load_dataset(from_path):
-    dataset = pd.read_csv(from_path)
-    dataset["tags"] = dataset["tags"].apply(ast.literal_eval)
-
-    dataset_info = {}
-    dataset_info['id_to_label'] = list(
-            set(dataset['tags'].to_list()))
-    dataset_info['label_to_id'] = dict(
-            zip(dataset_info['id_to_label'], range(0, len(dataset_info['id_to_label']))))
-    dataset_info['n_labels'] = len(dataset_info['id_to_label'])
-    return dataset, dataset_info
-
 def gif_id_to_filepath(gif_id, ext='.mp4') -> str:
     GIFS_SOURCE = os.environ.get("GIF_PATH")
 
