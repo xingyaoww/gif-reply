@@ -49,33 +49,10 @@ logging.basicConfig(
 )
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    'input_filepath', help='filepath of the downloaded gif-reply dataset.',
-)
-parser.add_argument(
-    'output_filepath',
-    help='filepath of the processed gif-reply dataset.',
-)
-parser.add_argument(
-    'gif_metadata_filepath',
-    help='filepath of the downloaded gif metadata.',
-)
-parser.add_argument(
-    'twitter_credential_file',
-    help='filepath for twitter credentials.',
-)
-parser.add_argument(
-    'tweets_output_file',
-    help='filepath for intermediate tweets json.',
-)
-args = parser.parse_args()
-
-
 def crawl_tweets_to_file(
     all_tweet_ids: List[str],
-    tweets_output_file=args.tweets_output_file,
-    twitter_credential_file=args.twitter_credential_file,
+    tweets_output_file,
+    twitter_credential_file,
 ):
     logging.info(f'Start crawling parent tweets to {tweets_output_file}.')
     outfile = tweets_output_file
@@ -144,7 +121,7 @@ def crawl_tweets_to_file(
 
 def get_tweet_id_to_parent_text_mapping(
     all_tweet_ids: List[str],
-    tweets_output_file=args.tweets_output_file,
+    tweets_output_file,
 ) -> Dict[str, str]:
     logging.info('Creating Tweet ID to parent text mapping.')
     all_tweet_ids = set(all_tweet_ids)
@@ -164,33 +141,62 @@ def get_tweet_id_to_parent_text_mapping(
     return mapping
 
 
-# Read downloaded dataset
-dataset = pd.read_csv(args.input_filepath)
-dataset['parent_id'] = dataset['parent_id'].apply(str)
-dataset['child_id'] = dataset['child_id'].apply(str)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'input_filepath', help='filepath of the downloaded gif-reply dataset.',
+    )
+    parser.add_argument(
+        'output_filepath',
+        help='filepath of the processed gif-reply dataset.',
+    )
+    parser.add_argument(
+        'gif_metadata_filepath',
+        help='filepath of the downloaded gif metadata.',
+    )
+    parser.add_argument(
+        'twitter_credential_file',
+        help='filepath for twitter credentials.',
+    )
+    parser.add_argument(
+        'tweets_output_file',
+        help='filepath for intermediate tweets json.',
+    )
+    args = parser.parse_args()
 
-# Crawl tweets using Twitter Offical API
-all_parent_ids = list(dataset['parent_id'].unique())
-crawl_tweets_to_file(all_parent_ids)
+    # Read downloaded dataset
+    dataset = pd.read_csv(args.input_filepath)
+    dataset['parent_id'] = dataset['parent_id'].apply(str)
+    dataset['child_id'] = dataset['child_id'].apply(str)
 
-# Process `parent_text` as a field of dataset
-tweet_id_to_parent_text = get_tweet_id_to_parent_text_mapping(all_parent_ids)
-dataset['parent_text'] = dataset['parent_id'].apply(
-    lambda x: tweet_id_to_parent_text.get(x, ''),
-).apply(normalizeTweet)
-logging.info('Parent text processed for each parent tweet.')
+    # Crawl tweets using Twitter Offical API
+    all_parent_ids = list(dataset['parent_id'].unique())
+    crawl_tweets_to_file(
+        all_parent_ids,
+        tweets_output_file=args.tweets_output_file,
+        twitter_credential_file=args.twitter_credential_file,
+    )
 
-# Match `tags` for each `child_gif_id`
-gif_id_to_tags = dict(
-    pd.read_csv(args.gif_metadata_filepath)[
-    ['child_gif_id', 'tags']
-    ].to_numpy(),
-)
-dataset['tags'] = dataset['child_gif_id'].apply(
-    lambda x: gif_id_to_tags.get(x),
-)
-logging.info('Tags processed for each reply GIF.')
+    # Process `parent_text` as a field of dataset
+    tweet_id_to_parent_text = get_tweet_id_to_parent_text_mapping(
+        all_parent_ids, tweets_output_file=args.tweets_output_file,
+    )
+    dataset['parent_text'] = dataset['parent_id'].apply(
+        lambda x: tweet_id_to_parent_text.get(x, ''),
+    ).apply(normalizeTweet)
+    logging.info('Parent text processed for each parent tweet.')
 
-# Save processed dataset
-dataset.to_csv(args.output_filepath, index=False)
-logging.info(f'Processed dataset saved to {args.output_filepath}.')
+    # Match `tags` for each `child_gif_id`
+    gif_id_to_tags = dict(
+        pd.read_csv(args.gif_metadata_filepath)[
+            ['child_gif_id', 'tags']
+        ].to_numpy(),
+    )
+    dataset['tags'] = dataset['child_gif_id'].apply(
+        lambda x: gif_id_to_tags.get(x),
+    )
+    logging.info('Tags processed for each reply GIF.')
+
+    # Save processed dataset
+    dataset.to_csv(args.output_filepath, index=False)
+    logging.info(f'Processed dataset saved to {args.output_filepath}.')
