@@ -54,8 +54,12 @@ GIFs can be downloaded by using [this](download_twitter_gif.py) script as follow
 ```
 python3 download_twitter_gif.py \
     /path/to/downloaded/gif-twitter-url-mapping.csv \
-    /path/to/store/downloaded/gifs/
+    /path/to/store/downloaded/gifs/ # this is the $GIF_PATH of your choice
 ```
+
+This script will download all replied GIF files in `.mp4` format from Twitter, and then store them in a 3-level directory structure under `$GIF_PATH`. 
+For example, the GIF with hash ID `68e460404503373feee6f1c686007078dec7c0c602026667` will be saved to `$GIF_PATH/6/8/e/460404503373feee6f1c686007078dec7c0c602026667.mp4`.
+
 
 ## GIF metadata
 ### Download
