@@ -1,14 +1,16 @@
 # Quickstart for `PEPE` model
-Change `dataset_path`, `gif_feature_path`, `oscar_pretrained_model_dir` in `config.py` to you local path, and then run `python3 train.py` to start training.
-
-## Data Preperation
-
-* Change `dataset_path ` to the path of GIF Reply Dataset. Download and prepare the dataset following instruction [here](../../../data/README.md).
-* Change `gif_feature_path` to the path of GIF Feature dataset. Download and prepare the dataset following instruction [here](../../../data/README.md).
-
-## Pretrained Oscar model
+1. Change `dataset_path` in `config.py` to you `gif-reply-dataset.csv` path (prepare the data following instructions [here](../../data/README.md#gif-reply-dataset))
+2. Change `gif_feature_path` in `config.py` to you updated `gif-metadata.csv` with additional ROI metadata (instructions [here](../../data/README.md#gif-metadata)).
+3. Download Pretrained Oscar model to `$MODEL_DIR` (a directory of your choice):
 ```bash
 wget https://biglmdiag.blob.core.windows.net/oscar/pretrained_models/base-vg-labels.zip
 unzip base-vg-labels.zip -d $MODEL_DIR
 ```
-Change `oscar_pretrained_model_dir` to `$MODEL_DIR/ep_67_588997`.
+
+4. Change `oscar_pretrained_model_dir` in `config.py` to `$MODEL_DIR/ep_67_588997`.
+5. Run `python3 train.py` to start training.
+
+# Prerequisite
+```
+pip install transformers torch numpy pandas pytorch_ignite pytorch_transformers pandarallel tqdm scikit_learn
+```

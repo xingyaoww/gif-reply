@@ -6,5 +6,5 @@
 
 # Prerequisite
 ```
-pip install -r requirements.txt
+pip install imageio transformers torch tqdm torchvision pandas pandarallel numpy efficientnet_pytorch pytorch_ignite scikit_learn
 ```
