@@ -66,7 +66,7 @@ For example, the GIF with hash ID `68e460404503373feee6f1c686007078dec7c0c602026
 This dataset `gif-metadata.csv` ([download here](TODO)) contains metadata for GIFs.
 
 It has the following fields:
-- `child_gif_id`: hash ID of the replied GIF
+- `gif_id`: hash ID of the replied GIF
 - `ocr_text`: captions extracted using [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) on four frames sampled from each quartile of the gif’s length, seperated by "[INTER_FRAME_SEP]". 
 - `tags`: annotated tags for GIF. This is NOT needed to reproduce the `PEPE` model, and is only provided for replicability.
 
@@ -74,7 +74,7 @@ It has the following fields:
 ROI metadata is only required to train the `PEPE` model. 
 Additional ROI metadata can be extracted using [bottom-up-attention](https://github.com/airsplay/py-bottom-up-attention).
 
-Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and it will add the following two fields of data.
+Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and it will add the following two fields of data into a updated pickle file `gif-metadata-with-roi.pkl`.
 - `roi_feature`: extracted ROI features on four frames sampled from each quartile of the gif’s length.
 - `roi_labels`: extracted ROI labels on four frames sampled from each quartile of the gif’s length.
 
