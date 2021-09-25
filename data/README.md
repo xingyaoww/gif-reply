@@ -62,7 +62,7 @@ This dataset `gif-metadata.csv` ([download here](TODO)) contains metadata for GI
 It has the following fields:
 - `gif_id`: hash ID of the replied GIF
 - `ocr_text`: captions extracted using [paddleOCR](https://github.com/PaddlePaddle/PaddleOCR) on four frames sampled from each quartile of the gif’s length, seperated by `"[INTER_FRAME_SEP]"`.
-- `tags`: annotated tags for GIF. This is NOT needed to reproduce the `PEPE` model, and is only provided for replicability.
+- `tags`: annotated tags for GIF. This is NOT needed to reproduce the `PEPE` model, and is only provided for replicability of the tag-based model.
 
 ### Additional ROI metadata
 ROI metadata is only required to train the `PEPE` model.
@@ -75,8 +75,6 @@ Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and
 
 ## GIF GIPHY mapping
 ### Download
-
-This data is NOT needed to reproduce the `PEPE` model, and is only provided for replicability of the tag-based model.
 
 The file `gif-id-to-giphy-id-mapping.csv` ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to GIPHY ID.
 
