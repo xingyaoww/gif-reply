@@ -11,6 +11,6 @@ We release 1,562,701 text-gif conversation turns on Twitter, as well as the meta
 ## Models
 We release the code for the `PEPE` model and our baseline models (CLIP variant, Tag-based Predictions).
 More details can be found below:
-- `PEPE`: [code](src/pepe/), [model weight (forthcomming)](TODO), [notebook example (forthcomming)](TODO)
+- `PEPE`: [code](src/pepe/), [model weight](https://drive.google.com/file/d/1fOSxCwMPGVa7LooeRemteqv45Knkcxi_/view), [colab demo](https://colab.research.google.com/drive/1pCWj6y9R_cz3tI5lsxHQtdfrTfh8pE7H)
 - CLIP variant: [code](src/clip-variant)
 - Tag-based Predictions: [code](src/tag-based-prediction)
