@@ -2,7 +2,7 @@
 
 ## GIF Reply dataset
 ### Download
-The released GIF Reply dataset `gif-reply-dataset.csv` ([download here](TODO)) that contains 1,562,701 text-gif conversation turns.
+The released GIF Reply dataset `gif-reply-dataset.csv` ([download here](https://drive.google.com/file/d/1GClR5KLOsYAgYSS3iKP1k6-qcynR7d7g/view?usp=sharing)) that contains 1,562,701 text-gif conversation turns.
 
 This dataset has the following fields:
 - `parent_id`: parent tweet ID
@@ -57,7 +57,7 @@ For example, the GIF with hash ID `68e460404503373feee6f1c686007078dec7c0c602026
 
 ## GIF metadata
 ### Download
-This dataset `gif-metadata.csv` ([download here](TODO)) contains metadata for GIFs.
+This dataset `gif-metadata.csv` ([download here](https://drive.google.com/file/d/1GClR5KLOsYAgYSS3iKP1k6-qcynR7d7g/view?usp=sharing)) contains metadata for GIFs.
 
 It has the following fields:
 - `gif_id`: hash ID of the replied GIF
@@ -76,11 +76,26 @@ Preparation script to extract ROIs can be found [here (forthcomming)](TODO), and
 ## GIF GIPHY mapping
 ### Download
 
-The file `gif-id-to-giphy-id-mapping.csv` ([download here](TODO)) contains a mapping from the GIF ID (hash ID) to GIPHY ID.
+The file `gif-id-to-giphy-id-mapping.csv` ([download here](https://drive.google.com/file/d/1wadTg8qJGZWD6YR37xzuyXTJVSEtHx5X/view?usp=sharing)) contains a mapping from the GIF ID (hash ID) to GIPHY ID.
 
-`giphy-id-to-gif-id-mapping.csv` ([download here](TODO)) contains a mapping fron the GIPHY ID to the GIF ID (hash ID).
+`giphy-id-to-gif-id-mapping.csv` ([download here](https://drive.google.com/file/d/1wadTg8qJGZWD6YR37xzuyXTJVSEtHx5X/view?usp=sharing)) contains a mapping fron the GIPHY ID to the GIF ID (hash ID).
 
 
 Both files have the following fields:
 - `gif_id`: hash ID of a GIF
 - `giphy_id`: ID of the matched GIF on [GIPHY](https://giphy.com/). The GIF hosted on GIPHY can be found using link `https://giphy.com/gifs/[GIPHY_ID_HERE]`.
+
+
+## Inferred GIF Feature for `PEPE`
+
+The file `gif-pepe-inferred-features.csv` ([download here](https://drive.google.com/file/d/1GClR5KLOsYAgYSS3iKP1k6-qcynR7d7g/view?usp=sharing)) contains inferred GIF feature from a trained `PEPE` model for 115,404 GIFs.
+
+It has the following fields:
+- `gif_id`: hash ID of a GIF
+- `gif_feature`: a feature embedding for the corresponding gif.
+
+`gif-pepe-inferred-features-top1k.csv` ([download here](https://drive.google.com/file/d/1GClR5KLOsYAgYSS3iKP1k6-qcynR7d7g/view?usp=sharing)) is a subset of features for 1000 most used GIFs, and is provided for demonstration purpose.
+
+## `PEPE` model checkpoint
+
+The model checkpoint `PEPE-model-checkpoint.pth` can be [download here](https://drive.google.com/file/d/1fOSxCwMPGVa7LooeRemteqv45Knkcxi_/view), further on how to load the checkpoint can be found in the demo [here](TODO).
