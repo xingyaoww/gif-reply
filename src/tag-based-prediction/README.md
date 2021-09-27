@@ -1,4 +1,4 @@
-# Quickstart for `tag-based` model
+# Quickstart for training the `tag-based` model
 Following instructions below to train the `gif_classifier` and `tweet_classifier`.
 
 1. Change `dataset_path` in `config.py` your `gif-reply-dataset.csv` path (prepare the data following instructions [here](../../data/README.md#gif-reply-dataset)).
