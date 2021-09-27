@@ -51,14 +51,6 @@ class OscarGIFEncoder(nn.Module):
 
 
 class PEPEModel(nn.Module):
-    '''
-    Paper: https://cdn.openai.com/papers/Learning_Transferable_Visual_Models_From_Natural_Language_Supervision.pdf
-    Github: https://github.com/openai/CLIP
-
-    Args:
-        tau (float): scalar coefficient before applying softmax
-    '''
-
     def __init__(self, oscar_pretrained_model_dir, n_frames=4):
         super().__init__()
         self.gif_encoder = OscarGIFEncoder(

@@ -1,11 +1,9 @@
 """Models
 """
-from .CLIP import CLIPModel
 from .metrics import CLIPMetrics
 from .PEPE import PEPEModel
 
 METRIC_MAP = {
-    'CLIPModel': CLIPMetrics,
     'PEPEModel': CLIPMetrics,
 }
 
