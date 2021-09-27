@@ -98,4 +98,4 @@ It has the following fields:
 
 ## `PEPE` model checkpoint
 
-The model checkpoint `PEPE-model-checkpoint.pth` can be [download here](https://drive.google.com/file/d/1fOSxCwMPGVa7LooeRemteqv45Knkcxi_/view), further on how to load the checkpoint can be found in the demo [here](https://colab.research.google.com/drive/1pCWj6y9R_cz3tI5lsxHQtdfrTfh8pE7H).
+The model checkpoint `PEPE-model-checkpoint.pth` can be [download here](https://drive.google.com/file/d/1fOSxCwMPGVa7LooeRemteqv45Knkcxi_/view), further instruction on how to load the checkpoint can be found in the demo [here](https://colab.research.google.com/drive/1pCWj6y9R_cz3tI5lsxHQtdfrTfh8pE7H).
