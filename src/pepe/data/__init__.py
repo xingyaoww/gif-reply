@@ -35,7 +35,7 @@ def pad_OSCAR_sequence(X):
 
 
 COLLATE_FUNC_MAP = {
-    'OscarCLIPModel': pad_OSCAR_sequence,
+    'PEPEModel': pad_OSCAR_sequence,
 }
 
 

@@ -50,7 +50,7 @@ class OscarGIFEncoder(nn.Module):
         return logits
 
 
-class OscarCLIPModel(nn.Module):
+class PEPEModel(nn.Module):
     '''
     Paper: https://cdn.openai.com/papers/Learning_Transferable_Visual_Models_From_Natural_Language_Supervision.pdf
     Github: https://github.com/openai/CLIP

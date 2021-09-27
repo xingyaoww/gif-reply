@@ -2,7 +2,7 @@ import os
 
 
 class GifReplyOSCARConfig:
-    model = 'OscarCLIPModel'
+    model = 'PEPEModel'
     dataset = 'GifReplyOSCARDataset'
 
     dataset_path = 'FILL YOUR PATH TO gif-reply-dataset.csv HERE'

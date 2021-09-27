@@ -2,11 +2,11 @@
 """
 from .CLIP import CLIPModel
 from .metrics import CLIPMetrics
-from .OscarCLIP import OscarCLIPModel
+from .PEPE import PEPEModel
 
 METRIC_MAP = {
     'CLIPModel': CLIPMetrics,
-    'OscarCLIPModel': CLIPMetrics,
+    'PEPEModel': CLIPMetrics,
 }
 
 
