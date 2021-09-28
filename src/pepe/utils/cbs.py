@@ -865,7 +865,6 @@ class FiniteStateMachineBuilder:
         words = []
         for w in constraint.split():
             words.extend(self._constraint2tokens[w])
-        # TODO: set max_words_per_constraint
         #assert len(words) <= self._max_words_per_constraint
         if len(words) > self._max_words_per_constraint:
             words = words[:self._max_words_per_constraint]

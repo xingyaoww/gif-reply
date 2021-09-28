@@ -96,7 +96,6 @@ def round_filters(filters, global_params):
     multiplier = global_params.width_coefficient
     if not multiplier:
         return filters
-    # TODO: modify the params names.
     #       maybe the names (width_divisor,min_width)
     #       are more suitable than (depth_divisor,min_depth).
     divisor = global_params.depth_divisor
@@ -736,7 +735,6 @@ url_map_advprop = {
     'efficientnet-b8': 'https://github.com/lukemelas/EfficientNet-PyTorch/releases/download/1.0/adv-efficientnet-b8-22a8fe65.pth',
 }
 
-# TODO: add the petrained weights url map of 'efficientnet-l2'
 
 
 def load_pretrained_weights(model, model_name, weights_path=None, load_fc=True, advprop=False):
@@ -763,7 +761,6 @@ def load_pretrained_weights(model, model_name, weights_path=None, load_fc=True, 
         ret = model.load_state_dict(state_dict, strict=False)
 
         # weights for decoder are not loaded
-        # TODO: add initialization to missing layers
         missing_keys = []
         for key in ret.missing_keys:
             if not key.startswith(('_decoder', '_feature', '_upsample', '_downsample')):
