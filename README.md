@@ -7,7 +7,7 @@ The core task is to select a reaction gif to reply with. This task essentially c
 This repo contains code for the Findings of EMNLP 2021 paper [An animated picture says at least a thousand words: Selecting Gif-based Replies in Multimodal Dialog](https://arxiv.org/abs/2109.12212)
 by [Xingyao Wang](https://xingyaoww.github.io/) and [David Jurgens](https://jurgens.people.si.umich.edu/). The paper and this repo describe three models for how to implement this ranking function by training models that use (1) gif tags (i.e., annotations to gifs), (2) an [OpenAI CLIP](https://openai.com/blog/clip/) model, or (3) a multimodal OSCAR encoder. The last of those systems is known as **Pepe the King Prawn** and ultimately performed best in dataset-based evaluations and randomized controlled trial of effectiveness. Please see the paper for details.
 
-You can read all about this project, data, model, etc in the exciting PDF technical report _or_ in the general-audience [Imgur post](https://imgur.com/gallery/G0oSrLV) that goes into more detail than it probaly should. 
+You can read all about this project, data, model, etc in the [exciting PDF technical report]((https://arxiv.org/abs/2109.12212)) _or_ in the general-audience [Imgur post](https://imgur.com/gallery/G0oSrLV) that goes into more detail than it probaly should. 
 
 ## Dataset
 
