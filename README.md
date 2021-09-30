@@ -22,7 +22,9 @@ More details can be found below:
 
 # Interact with Pepe!
 
-If you want to see Pepe in action before trying to work on this research problem, feel free to try Pepe out in our Slack App, which has a live Pepe model reply to messages in a Slack workspace channel of your choosing. Code and installation instructions are on the [Slack App's repo](https://github.com/xingyaoww/gif-reply-slack-bot/blob/main/README.md)
+If you want to see Pepe in action before trying to work on this research problem, feel free to try Pepe out in our Slack App, which has a live Pepe model reply to messages in a Slack workspace channel of your choosing. Code and installation instructions are on the [Slack App's repo](https://github.com/xingyaoww/gif-reply-slack-bot/blob/main/README.md). Click the bottom below, or use the url [here](https://slack.com/oauth/v2/authorize?client_id=310336506131.1931634875367&scope=app_mentions:read,channels:history,channels:read,chat:write,commands,emoji:read,groups:history,groups:read,reactions:read&user_scope=).
+
+<a href="https://slack.com/oauth/v2/authorize?client_id=310336506131.1931634875367&scope=app_mentions:read,channels:history,channels:read,chat:write,commands,emoji:read,groups:history,groups:read,reactions:read&user_scope="><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
 
 # Contact and Citation Information
 
